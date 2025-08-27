@@ -39,9 +39,12 @@ pipeline {
         stage('Docker Build & Push Image') {
             steps {
                 sh '''
-                    export DOCKER_BUILDKIT=1
-                    docker build -t $IMAGE -f src/postgres/Dockerfile .
-                    docker push $IMAGE
+                  docker buildx create --use --name mybuilder || true
+                  docker buildx build \
+                    --platform linux/amd64 \
+                    -t registry.ldc.opstree.dev/ai-coe/postgres-mcp:V1.0 \
+                    -f src/postgres/Dockerfile . \
+                    --push
                 '''
             }
         }
