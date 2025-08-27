@@ -38,13 +38,10 @@ pipeline {
 
         stage('Docker Build & Push Image') {
             steps {
-        sh '''
-        docker buildx create --name mybuilder
-        docker buildx use mybuilder
-        docker buildx inspect --bootstrap
-        docker buildx build --platform linux/amd64 \
-          -t $IMAGE -f src/postgres/Dockerfile . --push
-        '''
+                sh '''
+                docker build -t $IMAGE -f src/postgres/Dockerfile .
+                docker push $IMAGE
+                '''
             }
         }
     }
