@@ -1,0 +1,56 @@
+pipeline {
+    agent any
+
+    environment {
+        REGISTRY = 'registry.ldc.opstree.dev'
+        REPO = "${REGISTRY}/ai-coe/postgres-MCP"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Set Image Version') {
+            steps {
+                script {
+                    IMAGE = "${REPO}:V1.0"
+                }
+            }
+        }
+
+        stage('Docker Registry Login') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'harbor-creds-jenkins',
+                    usernameVariable: 'REGISTRY_USER',
+                    passwordVariable: 'REGISTRY_PASS'
+                )]) {
+                    sh '''
+                        echo "$REGISTRY_PASS" | docker login $REGISTRY -u "$REGISTRY_USER" --password-stdin
+                    '''
+                }
+            }
+        }
+
+        stage('Docker Build & Push Image') {
+            steps {
+                sh '''
+                    docker build -t $IMAGE . -f src/postgres/Dockerfile
+                    docker push $IMAGE
+                '''
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "✅ Docker image pushed: $IMAGE"
+        }
+        failure {
+            echo "❌ Build failed!"
+        }
+    }
+}
