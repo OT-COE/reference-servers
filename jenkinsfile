@@ -36,9 +36,10 @@ pipeline {
             }
         }
 
-        stage('Docker Build & Push Image') {
+        stage('Docker Build & Push Image') {export DOCKER_BUILDKIT=1
             steps {
                 sh '''
+                    export DOCKER_BUILDKIT=1
                     docker build -t $IMAGE -f src/postgres/Dockerfile .
                     docker push $IMAGE
                 '''
