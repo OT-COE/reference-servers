@@ -36,7 +36,7 @@ pipeline {
             }
         }
 
-        stage('Docker Build & Push Image') {export DOCKER_BUILDKIT=1
+        stage('Docker Build & Push Image') {
             steps {
                 sh '''
                     export DOCKER_BUILDKIT=1
