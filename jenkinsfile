@@ -17,6 +17,7 @@ pipeline {
             steps {
                 script {
                     IMAGE = "${REPO}:V1.0"
+                    env.IMAGE = IMAGE
                 }
             }
         }
@@ -38,7 +39,7 @@ pipeline {
         stage('Docker Build & Push Image') {
             steps {
                 sh '''
-                    docker build -t $IMAGE . -f src/postgres/Dockerfile
+                    docker build -t $IMAGE -f src/postgres/Dockerfile .
                     docker push $IMAGE
                 '''
             }
