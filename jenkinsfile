@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         REGISTRY = 'registry.ldc.opstree.dev'
-        REPO = "${REGISTRY}/ai-coe/postgres-MCP"
+        REPO = "${REGISTRY}/ai-coe/postgres-mcp"
     }
 
     stages {
